@@ -1,10 +1,11 @@
 package com.michael.departmentService.service.impl;
 
+import com.michael.clients.department.DepartmentResponse;
 import com.michael.departmentService.entity.Department;
 import com.michael.departmentService.exceptions.payload.DepartmentExistExceptional;
 import com.michael.departmentService.exceptions.payload.DepartmentNotFoundException;
 import com.michael.departmentService.payload.request.DepartmentRequest;
-import com.michael.departmentService.payload.response.DepartmentResponse;
+
 import com.michael.departmentService.repository.DepartmentRepository;
 import com.michael.departmentService.service.DepartmentService;
 import org.modelmapper.ModelMapper;

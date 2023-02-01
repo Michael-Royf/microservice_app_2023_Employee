@@ -1,4 +1,4 @@
-package com.michael.employeeService.payload.response;
+package com.michael.clients.department;
 
 import lombok.*;
 

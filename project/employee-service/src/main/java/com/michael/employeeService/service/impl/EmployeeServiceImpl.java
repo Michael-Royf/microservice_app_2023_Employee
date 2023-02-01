@@ -1,11 +1,14 @@
 package com.michael.employeeService.service.impl;
 
+import com.michael.clients.department.DepartmentClients;
+import com.michael.clients.department.DepartmentResponse;
+import com.michael.clients.notification.NotificationClients;
+import com.michael.clients.notification.NotificationRequest;
 import com.michael.employeeService.entity.Employee;
 import com.michael.employeeService.exceptions.payload.EmailExistException;
 import com.michael.employeeService.exceptions.payload.EmployeeNotFoundException;
 import com.michael.employeeService.payload.request.EmployeeRequest;
 import com.michael.employeeService.payload.response.ApiResponseDto;
-import com.michael.employeeService.payload.response.DepartmentResponse;
 import com.michael.employeeService.payload.response.EmployeeResponse;
 import com.michael.employeeService.repository.EmployeeRepository;
 import com.michael.employeeService.service.EmployeeService;
@@ -25,11 +28,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
 //    @Autowired
 //    private RestTemplate restTemplate;
+//
+//    @Autowired
+//    private WebClient webClient;
+    @Autowired
+    private DepartmentClients departmentClients;
 
     @Autowired
-    private WebClient webClient;
-    //    @Autowired
-//    private APIClient apiClient;
+    private NotificationClients notificationClients;
+
     @Autowired
     private ModelMapper mapper;
 
@@ -96,13 +103,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
         //WebClient
-        DepartmentResponse departmentResponse = webClient.get()
-                .uri("http://localhost:8082/api/v1/department/" + employee.getDepartmentCode())
-                .retrieve()
-                .bodyToMono(DepartmentResponse.class)
-                .block();
+//        DepartmentResponse departmentResponse = webClient.get()
+//                .uri("http://localhost:8082/api/v1/department/" + employee.getDepartmentCode())
+//                .retrieve()
+//                .bodyToMono(DepartmentResponse.class)
+//                .block();
 
-        //DepartmentResponse departmentResponse = apiClient.getDepartmentByCode(employee.getDepartmentCode());
+        DepartmentResponse departmentResponse = departmentClients.getDepartmentByCode(employee.getDepartmentCode());
 
         EmployeeResponse employeeResponse = mapper.map(employee, EmployeeResponse.class);
 
@@ -111,7 +118,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .employeeResponse(employeeResponse)
                 .departmentResponse(departmentResponse)
                 .build();
-
+        NotificationRequest notificationRequest = NotificationRequest.builder()
+                .employeeName(employee.getFirstName())
+                .employeeEmail(employee.getEmail())
+                .employeeId(employee.getId())
+                .build();
+      notificationClients.sendNotification(notificationRequest);
         return apiResponseDto;
     }
 

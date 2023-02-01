@@ -1,5 +1,6 @@
 package com.michael.employeeService.payload.response;
 
+import com.michael.clients.department.DepartmentResponse;
 import lombok.*;
 
 @AllArgsConstructor

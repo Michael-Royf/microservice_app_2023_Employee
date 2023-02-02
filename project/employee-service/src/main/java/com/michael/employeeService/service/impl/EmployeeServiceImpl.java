@@ -12,6 +12,8 @@ import com.michael.employeeService.payload.response.ApiResponseDto;
 import com.michael.employeeService.payload.response.EmployeeResponse;
 import com.michael.employeeService.repository.EmployeeRepository;
 import com.michael.employeeService.service.EmployeeService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
@@ -53,6 +56,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .departmentCode(employeeRequest.getDepartmentCode())
                 .build();
         employee = employeeRepository.save(employee);
+        NotificationRequest notificationRequest = NotificationRequest.builder()
+                .employeeName(employee.getFirstName())
+                .employeeEmail(employee.getEmail())
+                .employeeId(employee.getId())
+                .build();
+        notificationClients.sendNotification(notificationRequest);
         return mapper.map(employee, EmployeeResponse.class);
     }
 
@@ -88,8 +97,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return mapper.map(employee, EmployeeResponse.class);
     }
 
+
+    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
+    //  @Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
     @Override
     public ApiResponseDto getEmployeeById(Long id) throws EmployeeNotFoundException {
+        log.info("inside getEmployee by id");
         Employee employee = findEmployeeByInDB(id);
 
         //restTemplate
@@ -111,19 +124,30 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         EmployeeResponse employeeResponse = mapper.map(employee, EmployeeResponse.class);
 
+        ApiResponseDto apiResponseDto = ApiResponseDto.builder()
+                .employeeResponse(employeeResponse)
+                .departmentResponse(departmentResponse)
+                .build();
+        return apiResponseDto;
+    }
+
+    public ApiResponseDto getDefaultDepartment(Long id, Exception exception) throws EmployeeNotFoundException {
+        log.info("inside getDefaultDepartment by id");
+        Employee employee = findEmployeeByInDB(id);
+        DepartmentResponse departmentResponse = DepartmentResponse.builder()
+                .departmentName("Default Department")
+                .departmentCode("RD001")
+                .departmentDescription("Research and Development Department")
+                .build();
+        EmployeeResponse employeeResponse = mapper.map(employee, EmployeeResponse.class);
 
         ApiResponseDto apiResponseDto = ApiResponseDto.builder()
                 .employeeResponse(employeeResponse)
                 .departmentResponse(departmentResponse)
                 .build();
-        NotificationRequest notificationRequest = NotificationRequest.builder()
-                .employeeName(employee.getFirstName())
-                .employeeEmail(employee.getEmail())
-                .employeeId(employee.getId())
-                .build();
-        notificationClients.sendNotification(notificationRequest);
         return apiResponseDto;
     }
+
 
     private Employee findEmployeeByInDB(Long employeeId) throws EmployeeNotFoundException {
         return employeeRepository.findById(employeeId)

@@ -25,7 +25,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     public static final String FAILED_TO_SEND_EMAIL = "Failed to send email";
     public static final String FROM_EMAIL = "microservice_support@gmail.com";
-    public static final String GREETING = "Hello  %s,\n\n Welcome to the app \n\nThe Support Team";
+    public static final String GREETING = "Hello  %s,\n\nWelcome to the app \n\nThe Support Team";
     public static final String SENDER = "The Support Team";
 
 

@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="apigw" />
         <module name="notification" />
+        <module name="config-server" />
         <module name="clients" />
         <module name="department-service" />
         <module name="eureka-server" />

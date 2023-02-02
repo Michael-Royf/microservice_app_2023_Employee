@@ -1,3 +1,11 @@
-for email notification use command --> docker run -p 1080:1080 -p 1025:1025 maildev/maildev
+for email notification use command -->
+docker run -p 1080:1080 -p 1025:1025 maildev/maildev
+
 and open url http://localhost:1080/
+
+
+config server
+когда меняешь проперти в репизотории перезапусти config-server
+и вызови  с POST method
+http://localhost:8082/actuator/refresh
 

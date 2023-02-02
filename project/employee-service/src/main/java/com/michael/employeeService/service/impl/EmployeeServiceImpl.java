@@ -15,7 +15,6 @@ import com.michael.employeeService.service.EmployeeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,22 +23,21 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    @Autowired
     private EmployeeRepository employeeRepository;
-//    @Autowired
-//    private RestTemplate restTemplate;
-//
-//    @Autowired
-//    private WebClient webClient;
-    @Autowired
     private DepartmentClients departmentClients;
-
-    @Autowired
     private NotificationClients notificationClients;
-
-    @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository,
+                               DepartmentClients departmentClients,
+                               NotificationClients notificationClients,
+                               ModelMapper mapper) {
+        this.employeeRepository = employeeRepository;
+        this.departmentClients = departmentClients;
+        this.notificationClients = notificationClients;
+        this.mapper = mapper;
+    }
 
     @Override
     public EmployeeResponse createEmployee(EmployeeRequest employeeRequest) throws EmailExistException {
@@ -123,7 +121,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .employeeEmail(employee.getEmail())
                 .employeeId(employee.getId())
                 .build();
-      notificationClients.sendNotification(notificationRequest);
+        notificationClients.sendNotification(notificationRequest);
         return apiResponseDto;
     }
 

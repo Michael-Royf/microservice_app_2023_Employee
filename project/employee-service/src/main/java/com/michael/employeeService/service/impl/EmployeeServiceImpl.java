@@ -4,6 +4,8 @@ import com.michael.clients.department.DepartmentClients;
 import com.michael.clients.department.DepartmentResponse;
 import com.michael.clients.notification.NotificationClients;
 import com.michael.clients.notification.NotificationRequest;
+import com.michael.clients.organization.OrganizationClients;
+import com.michael.clients.organization.OrganizationResponse;
 import com.michael.employeeService.entity.Employee;
 import com.michael.employeeService.exceptions.payload.EmailExistException;
 import com.michael.employeeService.exceptions.payload.EmployeeNotFoundException;
@@ -29,16 +31,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private DepartmentClients departmentClients;
     private NotificationClients notificationClients;
+    private OrganizationClients organizationClients;
     private ModelMapper mapper;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                DepartmentClients departmentClients,
                                NotificationClients notificationClients,
+                               OrganizationClients organizationClients,
                                ModelMapper mapper) {
         this.employeeRepository = employeeRepository;
         this.departmentClients = departmentClients;
         this.notificationClients = notificationClients;
+        this.organizationClients = organizationClients;
         this.mapper = mapper;
     }
 
@@ -54,6 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .lastName(employeeRequest.getLastName())
                 .email(employeeRequest.getEmail())
                 .departmentCode(employeeRequest.getDepartmentCode())
+                .organizationCode(employeeRequest.getOrganizationCode())
                 .build();
         employee = employeeRepository.save(employee);
         NotificationRequest notificationRequest = NotificationRequest.builder()
@@ -121,12 +127,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 //                .block();
 
         DepartmentResponse departmentResponse = departmentClients.getDepartmentByCode(employee.getDepartmentCode());
+        OrganizationResponse organizationResponse = organizationClients.getOrganizationByCode(employee.getOrganizationCode());
 
         EmployeeResponse employeeResponse = mapper.map(employee, EmployeeResponse.class);
 
         ApiResponseDto apiResponseDto = ApiResponseDto.builder()
                 .employeeResponse(employeeResponse)
                 .departmentResponse(departmentResponse)
+                .organizationResponse(organizationResponse)
                 .build();
         return apiResponseDto;
     }
@@ -139,11 +147,18 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .departmentCode("RD001")
                 .departmentDescription("Research and Development Department")
                 .build();
+        OrganizationResponse organizationResponse = OrganizationResponse.builder()
+                .organizationCode("OR001")
+                .organizationName("Default organization")
+                .organizationDescription("Research and Development Organization")
+                .build();
+
         EmployeeResponse employeeResponse = mapper.map(employee, EmployeeResponse.class);
 
         ApiResponseDto apiResponseDto = ApiResponseDto.builder()
                 .employeeResponse(employeeResponse)
                 .departmentResponse(departmentResponse)
+                .organizationResponse(organizationResponse)
                 .build();
         return apiResponseDto;
     }

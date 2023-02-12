@@ -1,8 +1,8 @@
 package com.michael.employeeService.service.impl;
 
+import com.michael.amqp.RabbitMQMessageProducer;
 import com.michael.clients.department.DepartmentClients;
 import com.michael.clients.department.DepartmentResponse;
-import com.michael.clients.notification.NotificationClients;
 import com.michael.clients.notification.NotificationRequest;
 import com.michael.clients.organization.OrganizationClients;
 import com.michael.clients.organization.OrganizationResponse;
@@ -30,21 +30,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
     private DepartmentClients departmentClients;
-    private NotificationClients notificationClients;
     private OrganizationClients organizationClients;
     private ModelMapper mapper;
+
+    private RabbitMQMessageProducer rabbitMQMessageProducer;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                DepartmentClients departmentClients,
-                               NotificationClients notificationClients,
                                OrganizationClients organizationClients,
-                               ModelMapper mapper) {
+                               ModelMapper mapper,
+                               RabbitMQMessageProducer rabbitMQMessageProducer) {
         this.employeeRepository = employeeRepository;
         this.departmentClients = departmentClients;
-        this.notificationClients = notificationClients;
         this.organizationClients = organizationClients;
         this.mapper = mapper;
+        this.rabbitMQMessageProducer = rabbitMQMessageProducer;
     }
 
     @Override
@@ -67,7 +68,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .employeeEmail(employee.getEmail())
                 .employeeId(employee.getId())
                 .build();
-        notificationClients.sendNotification(notificationRequest);
+
+        rabbitMQMessageProducer.publish(
+                notificationRequest,
+                "internal.exchange",
+                "internal.notification.routing-key"
+        );
+
         return mapper.map(employee, EmployeeResponse.class);
     }
 
@@ -110,21 +117,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public ApiResponseDto getEmployeeById(Long id) throws EmployeeNotFoundException {
         log.info("inside getEmployee by id");
         Employee employee = findEmployeeByInDB(id);
-
-        //restTemplate
-//        ResponseEntity<DepartmentResponse> responseEntity = restTemplate.getForEntity(
-//                "http://localhost:8082/api/v1/department/" + employee.getDepartmentCode(),
-//                DepartmentResponse.class
-//        );
-//        DepartmentResponse departmentResponse = responseEntity.getBody();
-
-
-        //WebClient
-//        DepartmentResponse departmentResponse = webClient.get()
-//                .uri("http://localhost:8082/api/v1/department/" + employee.getDepartmentCode())
-//                .retrieve()
-//                .bodyToMono(DepartmentResponse.class)
-//                .block();
 
         DepartmentResponse departmentResponse = departmentClients.getDepartmentByCode(employee.getDepartmentCode());
         OrganizationResponse organizationResponse = organizationClients.getOrganizationByCode(employee.getOrganizationCode());

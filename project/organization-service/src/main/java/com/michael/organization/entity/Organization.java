@@ -12,9 +12,15 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Entity
+@Table(name = "organizations")
 public class Organization {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "organization_sequence",
+            sequenceName = "organization_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "organization_sequence")
     @Column(name = "organization_id", nullable = false, updatable = false)
     private Long id;
     @Column(nullable = false)

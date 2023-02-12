@@ -1,7 +1,16 @@
-for email notification use command -->
-docker run -p 1080:1080 -p 1025:1025 maildev/maildev
 
-and open url http://localhost:1080/
+1. docker-compose up -d
+2. open http://localhost:5050 for pgAdmin
+3. open http://localhost:1080 email box
+
+
+
+
+docker run -p 1080:1080 -p 1025:1025 maildev/maildev
+url http://localhost:1080/
+for rabbitmq-->
+docker run --rm -it -p 5672:5672 rabbitmq
+
 
 
 config server
@@ -14,8 +23,6 @@ http://localhost:8082/actuator/busrefresh
 
 management.endpoints.web.exposure.include=*
 
-for rabbitmq-->
-docker run --rm -it -p 5672:5672 rabbitmq
 
 Circuit Breaker
 https://spring.io/projects/spring-cloud-circuitbreaker

@@ -12,6 +12,7 @@
         <module name="config-server" />
         <module name="clients" />
         <module name="department-service" />
+        <module name="amqp" />
         <module name="organization-service" />
         <module name="eureka-server" />
         <module name="employee-service" />

@@ -14,14 +14,4 @@ public class ApplicationConfig {
         return new ModelMapper();
     }
 
-//    @Bean
-//    public WebClient webClient() {
-//        return WebClient.builder().build();
-//    }
-
-
-//    @Bean
-//    public RestTemplate restTemplate(){
-//        return  new RestTemplate();
-//    }
 }

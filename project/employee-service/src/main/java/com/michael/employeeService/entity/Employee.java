@@ -12,7 +12,12 @@ import lombok.*;
 @Table(name = "employees")
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "employee_sequence",
+            sequenceName = "employee_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_sequence")
     @Column(updatable = false)
     private Long id;
     @Column(name = "first_name", nullable = false)

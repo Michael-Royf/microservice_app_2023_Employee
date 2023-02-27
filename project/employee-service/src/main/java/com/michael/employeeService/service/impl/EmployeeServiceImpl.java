@@ -111,8 +111,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
-    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
-    //  @Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
     @Override
     public ApiResponseDto getEmployeeById(Long id) throws EmployeeNotFoundException {
         log.info("inside getEmployee by id");
@@ -120,30 +118,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         DepartmentResponse departmentResponse = departmentClients.getDepartmentByCode(employee.getDepartmentCode());
         OrganizationResponse organizationResponse = organizationClients.getOrganizationByCode(employee.getOrganizationCode());
-
-        EmployeeResponse employeeResponse = mapper.map(employee, EmployeeResponse.class);
-
-        ApiResponseDto apiResponseDto = ApiResponseDto.builder()
-                .employeeResponse(employeeResponse)
-                .departmentResponse(departmentResponse)
-                .organizationResponse(organizationResponse)
-                .build();
-        return apiResponseDto;
-    }
-
-    public ApiResponseDto getDefaultDepartment(Long id, Exception exception) throws EmployeeNotFoundException {
-        log.info("inside getDefaultDepartment by id");
-        Employee employee = findEmployeeByInDB(id);
-        DepartmentResponse departmentResponse = DepartmentResponse.builder()
-                .departmentName("Default Department")
-                .departmentCode("RD001")
-                .departmentDescription("Research and Development Department")
-                .build();
-        OrganizationResponse organizationResponse = OrganizationResponse.builder()
-                .organizationCode("OR001")
-                .organizationName("Default organization")
-                .organizationDescription("Research and Development Organization")
-                .build();
 
         EmployeeResponse employeeResponse = mapper.map(employee, EmployeeResponse.class);
 

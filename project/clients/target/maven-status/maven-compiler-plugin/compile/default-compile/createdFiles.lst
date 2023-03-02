@@ -1,0 +1,9 @@
+com\michael\clients\organization\OrganizationClients.class
+com\michael\clients\organization\OrganizationResponse$OrganizationResponseBuilder.class
+com\michael\clients\department\DepartmentResponse.class
+com\michael\clients\notification\NotificationClients.class
+com\michael\clients\organization\OrganizationResponse.class
+com\michael\clients\department\DepartmentResponse$DepartmentResponseBuilder.class
+com\michael\clients\notification\NotificationRequest$NotificationRequestBuilder.class
+com\michael\clients\notification\NotificationRequest.class
+com\michael\clients\department\DepartmentClients.class

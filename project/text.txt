@@ -41,3 +41,16 @@ https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.ht
 
 
 
+jib
+https://github.com/GoogleContainerTools/jib
+
+
+https://maven.apache.org/plugins/maven-compiler-plugin/
+https://maven.apache.org/index.html
+
+
+модуль Employee не получится скомпелировать в maven lifecycle из- за модуля clients
+нужно сперва сделать - clean --- install в root,  чтоб модуль был в локальном репозитории
+
+
+

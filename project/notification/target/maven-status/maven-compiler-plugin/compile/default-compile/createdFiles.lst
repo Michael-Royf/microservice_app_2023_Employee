@@ -1,0 +1,8 @@
+com\michael\notification\entity\Notification.class
+com\michael\notification\NotificationApp.class
+com\michael\notification\repository\NotificationRepository.class
+com\michael\notification\entity\Notification$NotificationBuilder.class
+com\michael\notification\service\NotificationService.class
+com\michael\notification\controller\NotificationController.class
+com\michael\notification\service\consumer\NotificationConsumer.class
+com\michael\notification\service\impl\NotificationServiceImpl.class
